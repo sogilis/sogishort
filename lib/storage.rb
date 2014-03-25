@@ -10,7 +10,7 @@ class Storage < Git
     write "add link" do |index|
       oid = write_blob(link)
       hash = oid[0..4]
-      index.add blob_with_oid(oid, link_path hash)
+      index.add blob_with_oid(oid, link_path(hash))
     end
     hash
   end
