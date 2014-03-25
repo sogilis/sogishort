@@ -11,6 +11,7 @@ gem "coffee-script",     "~> 2.2"
 gem "uglifier",          "~> 2.4"
 
 gem "rugged",            "~> 0.19"
+gem 'bcrypt', '~> 3.1.7'
 
 gem 'haml'
 
