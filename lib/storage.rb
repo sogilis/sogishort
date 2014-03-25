@@ -28,10 +28,12 @@ class Storage < Git
   def get_links
     result = []
     links = read_tree LINKS_PATH
-    links.each do |entry|
-      url = @repository.read(entry[:oid]).data
-      hash = entry[:name]
-      result << {:url => url, :hash => hash}
+    if !links.nil?
+      links.each do |entry|
+        url = @repository.read(entry[:oid]).data
+        hash = entry[:name]
+        result << {:url => url, :hash => hash}
+      end
     end
     result
   end
