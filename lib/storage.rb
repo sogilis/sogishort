@@ -1,6 +1,6 @@
 require_relative 'git'
 
-class LinksStorage < Git
+class Storage < Git
 
   LINKS_PATH = 'links'
 

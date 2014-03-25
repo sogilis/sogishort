@@ -2,14 +2,14 @@ require "bundler"
 Bundler.require
 include Sprockets::Helpers
 
-require_relative 'lib/linksstorage'
+require_relative 'lib/storage'
 
 class App < Sinatra::Base
 
   def initialize(app = nil)
     super(app)
 
-    @storage = LinksStorage.new
+    @storage = Storage.new
   end
 
   set :sprockets, Sprockets::Environment.new(root)
