@@ -1,6 +1,12 @@
-%ul
-  - links.each do |link|
-    %li
-      %a{:href => "#{base}/#{link[:hash]}"}="#{base}/#{link[:hash]}"
-      —
-      %a{:href => link[:url]}=link[:url]
+%table.table.table-striped
+  %thead
+    %tr
+      %th Short link
+      %th Full link
+  %tbody
+    - links.each do |link|
+      %tr
+        %td
+          %a{:href => "#{base}/#{link[:hash]}"}="#{base}/#{link[:hash]}"
+        %td
+          %a{:href => link[:url]}=link[:url]
