@@ -1,0 +1,6 @@
+%ul
+  - links.each do |link|
+    %li
+      %a{:href => "#{base}/#{link[:hash]}"}="#{base}/#{link[:hash]}"
+      —
+      %a{:href => link[:url]}=link[:url]

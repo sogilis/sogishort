@@ -1,3 +1,5 @@
-// bootstrap is available under bootstrap-sass/js
+//= require "jquery/dist/jquery"
+
+//= require "bootstrap-sass/dist/js/bootstrap"
 
 //= require "main"

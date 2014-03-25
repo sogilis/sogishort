@@ -18,6 +18,16 @@ class LinksStorage < Git
     read_blob hash
   end
 
+  def get_links
+    result = []
+    get_tree.each do |entry|
+      url = @repository.read(entry[:oid]).data
+      hash = entry[:name]
+      result << {:url => url, :hash => hash}
+    end
+    result
+  end
+
 private
 
   # @param [String] oid

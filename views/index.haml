@@ -1,4 +1,7 @@
-%form{:method => 'POST'}
-  %label{:for => 'url'} URL:
-  %input{:type => 'text', :name => 'url'}
-  %input{:type => 'submit', :value => 'Do!'}
+.row
+  .col-sm-offset-2.col-sm-8
+    %form.form{:method => 'POST', :role => 'form'}
+      .form-group
+        %label{:for => 'url'} URL:
+        %input.form-control{:type => 'url', :name => 'url', :placeholder => 'Link to shorten', :required => 'required'}
+      %button.btn.btn-default{:type => 'submit'} Do!
