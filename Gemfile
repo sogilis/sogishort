@@ -10,7 +10,7 @@ gem "sass",              "~> 3.2"
 gem "coffee-script",     "~> 2.2"
 gem "uglifier",          "~> 2.4"
 
-gem "rugged", git: 'git://github.com/libgit2/rugged.git', branch: 'development', submodules: true
+gem "rugged",            "~> 0.19"
 
 gem 'haml'
 

@@ -78,11 +78,8 @@ protected
   end
 
   def get_tree(rev = nil)
-    if rev.nil?
-      @repository.head.target.tree
-    else
-      @repository.lookup(rev).tree
-    end
+    rev ||= @repository.head.target
+    @repository.lookup(rev).tree
   end
 
   # @param [Rugged::Tree] tree
@@ -105,10 +102,6 @@ protected
   def commit_head(tree, message = nil)
     parents = @repository.empty? ? [] : [@repository.head.target]
     commit tree, message, parents
-  end
-
-  def commit_merge(tree, message, first_parent, second_parent)
-    commit tree, message, [first_parent, second_parent]
   end
 
   def commit(tree, message = nil, parents = [])
