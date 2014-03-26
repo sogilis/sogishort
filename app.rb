@@ -41,7 +41,7 @@ class App < Sinatra::Base
   end
 
   get '/list' do
-    haml :list, :locals => {:base => request.url.gsub(request.path, ''), :links => @storage.get_links}
+    haml :list, :locals => {:base => path(request), :links => @storage.get_links}
   end
 
   get '/settings' do
@@ -56,10 +56,24 @@ class App < Sinatra::Base
 
   get '/v/:hash' do |hash|
     url = @storage.get_url(hash)
-    haml :link, :locals => {:base => request.url.gsub(request.path, ''), :url => url, :hash => hash}
+    haml :link, :locals => {:base => path(request), :url => url, :hash => hash}
+  end
+
+  get '/add' do
+    protected!
+    url = params[:url]
+    hash = @storage.write_link url
+    short = "#{path(request)}/#{hash}"
+    halt 200, {'Content-Type' => 'text/plain'}, short
   end
 
   get '/:hash' do |hash|
     redirect @storage.get_url(hash), 303
+  end
+
+  def path(request)
+    path = "#{request.scheme}://#{request.host}"
+    path += ":#{request.port}" if request.port != 80
+    path
   end
 end
