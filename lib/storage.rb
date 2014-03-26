@@ -28,7 +28,7 @@ class Storage < Git
   def get_links
     result = []
     links = read_tree LINKS_PATH
-    if !links.nil?
+    unless links.nil?
       links.each do |entry|
         url = @repository.read(entry[:oid]).data
         hash = entry[:name]
