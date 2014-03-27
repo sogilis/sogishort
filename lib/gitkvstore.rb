@@ -1,8 +1,11 @@
 require_relative 'kvstore'
 require_relative 'git'
+require 'thread'
 
 class GitKVStore < KVStore
   def initialize
+    @@mutex = Mutex.new
+
     @git = Git.new
     @index = nil
   end
@@ -22,9 +25,11 @@ class GitKVStore < KVStore
   # @param [String] value
   # @return [String] value
   def set(key, value)
-    @git.write "set" do |index|
-      index.add @git.blob(value, key)
-    end
+    @@mutex.synchronize {
+      @git.write "set" do |index|
+        index.add @git.blob(value, key)
+      end
+    }
   end
 
   def multi_set()

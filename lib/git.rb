@@ -2,13 +2,9 @@ REPO_PATH='links.git'
 AUTHOR_MAIL='yves@sogilis.com'
 AUTHOR_NAME='Yves'
 
-require 'thread'
-
 class Git
 
   def initialize()
-    @@mutex = Mutex.new
-
     if File.exist? REPO_PATH
       @repository = Rugged::Repository.new REPO_PATH
     else
@@ -18,11 +14,9 @@ class Git
 
   # @param [String] message
   def write(message = nil)
-    @@mutex.synchronize {
-      index = get_index
-      yield index if block_given?
-      commit_head index.write_tree(@repository), message
-    }
+    index = get_index
+    yield index if block_given?
+    commit_head index.write_tree(@repository), message
   end
 
   # @param [Hash] entry
