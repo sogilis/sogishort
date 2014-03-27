@@ -40,7 +40,7 @@ class App < Sinatra::Base
   post '/' do
     protected!
     url = params[:url]
-    hash = @storage.write_link url
+    hash = @storage.add_link url
     redirect to("/v/#{hash}")
   end
 
@@ -51,7 +51,7 @@ class App < Sinatra::Base
   end
 
   get '/list' do
-    haml :list, :locals => {:base => path(request), :links => @storage.get_links}
+    haml :list, :locals => {:base => path(request), :links => @storage.links}
   end
 
   get '/settings' do
@@ -65,20 +65,20 @@ class App < Sinatra::Base
   end
 
   get '/v/:hash' do |hash|
-    url = @storage.get_url(hash)
+    url = @storage.url(hash)
     haml :link, :locals => {:base => path(request), :url => url, :hash => hash}
   end
 
   get '/add' do
     protected!
     url = params[:url]
-    hash = @storage.write_link url
+    hash = @storage.add_link url
     short = "#{path(request)}/#{hash}"
     halt 200, {'Content-Type' => 'text/plain'}, short
   end
 
   get '/:hash' do |hash|
-    redirect @storage.get_url(hash), 303
+    redirect @storage.url(hash), 303
   end
 
   def path(request)

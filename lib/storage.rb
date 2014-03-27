@@ -17,14 +17,14 @@ class Storage
   end
 
   # @param [String] link
-  def write_link(link)
+  def add_link(link)
     hash = Url.to_hash link
     @store.set link_path(hash), link
     hash
   end
 
   # @param [String] hash
-  def get_url(hash)
+  def url(hash)
     @store.incr hit_path hash
     @store.get link_path hash
   end
@@ -34,7 +34,8 @@ class Storage
     @store.get hit_path hash
   end
 
-  def get_links
+  # @return [Array]
+  def links
     entries = @store.multi_get_under LINKS_PATH
     entries.inject([]) do |links, link|
       links << {:url => link[:value], :hash => unlink_path(link[:key])}
