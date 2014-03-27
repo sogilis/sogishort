@@ -3,13 +3,23 @@ Bundler.require
 include Sprockets::Helpers
 
 require_relative 'lib/storage'
+require_relative 'lib/kvstore'
+require_relative 'lib/gitkvstore'
+require_relative 'lib/rediskvstore'
 
 class App < Sinatra::Base
 
   def initialize(app = nil)
     super(app)
 
-    @storage = Storage.new
+    if ENV['STORE'] == 'git'
+      store = GitKVStore.new
+    elsif ENV['STORE'] == 'redis'
+      store = RedisKVStore.new
+    else
+      raise NotImplementedError, 'no store found'
+    end
+    @storage = Storage.new store
   end
 
   set :sprockets, Sprockets::Environment.new(root)

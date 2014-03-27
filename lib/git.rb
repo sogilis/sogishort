@@ -16,8 +16,6 @@ class Git
     end
   end
 
-protected
-
   # @param [String] message
   def write(message = nil)
     @@mutex.synchronize {
@@ -30,6 +28,10 @@ protected
   # @param [Hash] entry
   def tree entry
     @repository.lookup entry[:oid]
+  end
+
+  def read(oid)
+    @repository.read oid
   end
 
   # @param [String] path

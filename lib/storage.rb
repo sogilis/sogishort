@@ -1,6 +1,6 @@
 require_relative 'url'
+require_relative 'kvstore'
 require 'bcrypt'
-require 'redis'
 
 class Storage
   include BCrypt
@@ -10,45 +10,45 @@ class Storage
   USER_PATH = File.join SETTINGS_PATH, 'user'
   PASS_PATH = File.join SETTINGS_PATH, 'password'
 
-  def initialize
-    url = ENV['REDISTOGO_URL'] || ENV['REDIS_URL']
-    @redis = Redis.new :url => url
+  # @param [KVStore] store
+  def initialize(store)
+    @store = store
   end
 
   # @param [String] link
   def write_link(link)
     hash = Url.to_hash link
-    @redis.set link_path(hash), link
+    @store.set link_path(hash), link
     hash
   end
 
   # @param [String] hash
   def get_url(hash)
-    @redis.get link_path hash
+    @store.get link_path hash
   end
 
   def get_links
-    keys = @redis.keys link_path '*'
-    keys.inject([]) do |links, key|
-      links << {:url => @redis.get(key), :hash => unlink_path(key)}
+    entries = @store.multi_get_under LINKS_PATH
+    entries.inject([]) do |links, link|
+      links << {:url => link[:value], :hash => unlink_path(link[:key])}
     end
   end
 
   def store_settings(user, pass)
-    @redis.multi do
-      @redis.set USER_PATH, user
-      @redis.set PASS_PATH, Password.create(pass)
+    @store.multi_set do
+      @store.add USER_PATH, user
+      @store.add PASS_PATH, Password.create(pass)
     end
   end
 
   def configured?
-    !@redis.get(USER_PATH).nil?
+    @store.exists? USER_PATH
   end
 
   def authenticate(user, pass)
     return false unless configured?
-    u = @redis.get USER_PATH
-    p = Password.new @redis.get PASS_PATH
+    u = @store.get USER_PATH
+    p = Password.new @store.get PASS_PATH
     u == user && p == pass
   end
 
