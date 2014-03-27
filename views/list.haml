@@ -3,6 +3,7 @@
     %tr
       %th Short link
       %th Full link
+      %th Details
   %tbody
     - links.each do |link|
       %tr
@@ -10,3 +11,5 @@
           %a{:href => "#{base}/#{link[:hash]}"}="#{base}/#{link[:hash]}"
         %td
           %a{:href => link[:url]}=link[:url]
+        %td
+          %a{:href => "/v/#{link[:hash]}"} ->
