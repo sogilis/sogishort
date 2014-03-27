@@ -39,6 +39,11 @@ class RedisKVStore < KVStore
     set key, value
   end
 
+  # @param [String] key
+  def incr(key)
+    @redis.incr key
+  end
+
   # @param [String] key_prefix
   # @return [Array]
   def multi_get_under(key_prefix)
