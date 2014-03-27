@@ -49,7 +49,7 @@ class GitKVStore < KVStore
   def incr(key)
     @@mutex.synchronize {
       val = get key
-      do_set key, val.to_i + 1
+      do_set key, (val.to_i + 1).to_s
     }
   end
 
