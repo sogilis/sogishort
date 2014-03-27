@@ -25,8 +25,11 @@ class Storage
 
   # @param [String] hash
   def url(hash)
-    @store.incr hit_path hash
     @store.get link_path hash
+  end
+
+  def incr_hits(hash)
+    @store.incr hit_path hash
   end
 
   # @param [String] hash

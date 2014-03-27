@@ -65,8 +65,9 @@ class App < Sinatra::Base
   end
 
   get '/v/:hash' do |hash|
-    url = @storage.url(hash)
-    haml :link, :locals => {:base => path(request), :url => url, :hash => hash}
+    url = @storage.url hash
+    hits = @storage.hits hash
+    haml :link, :locals => {:base => path(request), :url => url, :hash => hash, :hits => hits}
   end
 
   get '/add' do
@@ -78,6 +79,7 @@ class App < Sinatra::Base
   end
 
   get '/:hash' do |hash|
+    @storage.incr_hits hash
     redirect @storage.url(hash), 303
   end
 
