@@ -51,7 +51,12 @@ class App < Sinatra::Base
   end
 
   get '/list' do
-    haml :list, :locals => {:base => path(request), :links => @storage.links}
+    links = @storage.links
+    links_with_hits = links.map do |link|
+      link[:hits] = @storage.hits link[:hash]
+      link
+    end
+    haml :list, :locals => {:base => path(request), :links => links_with_hits}
   end
 
   get '/settings' do
