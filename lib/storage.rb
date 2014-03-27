@@ -9,6 +9,7 @@ class Storage
   SETTINGS_PATH = 'settings'
   USER_PATH = File.join SETTINGS_PATH, 'user'
   PASS_PATH = File.join SETTINGS_PATH, 'password'
+  HIT_PATH = 'hit'
 
   # @param [KVStore] store
   def initialize(store)
@@ -24,7 +25,13 @@ class Storage
 
   # @param [String] hash
   def get_url(hash)
+    @store.incr hit_path hash
     @store.get link_path hash
+  end
+
+  # @param [String] hash
+  def hits(hash)
+    @store.get hit_path hash
   end
 
   def get_links
@@ -60,5 +67,9 @@ private
 
   def unlink_path(path)
     path.gsub "#{LINKS_PATH}/", ''
+  end
+
+  def hit_path(path)
+    "#{LINKS_PATH}/#{path}/#{HIT_PATH}"
   end
 end
