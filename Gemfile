@@ -12,6 +12,8 @@ gem "uglifier",          "~> 2.4"
 
 gem "rugged",            "~> 0.19"
 gem 'bcrypt', '~> 3.1.7'
+gem 'base62', '~> 1.0.0'
+gem 'redis'
 
 gem 'haml'
 

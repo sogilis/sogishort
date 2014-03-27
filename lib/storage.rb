@@ -1,7 +1,8 @@
-require_relative 'git'
+require_relative 'url'
 require 'bcrypt'
+require 'redis'
 
-class Storage < Git
+class Storage
   include BCrypt
 
   LINKS_PATH = 'links'
@@ -9,50 +10,45 @@ class Storage < Git
   USER_PATH = File.join SETTINGS_PATH, 'user'
   PASS_PATH = File.join SETTINGS_PATH, 'password'
 
+  def initialize
+    url = ENV['REDISTOGO_URL'] || ENV['REDIS_URL']
+    @redis = Redis.new :url => url
+  end
+
   # @param [String] link
   def write_link(link)
-    hash = nil
-    write "add link" do |index|
-      oid = write_blob(link)
-      hash = oid[0..4]
-      index.add blob_with_oid(oid, link_path(hash))
-    end
+    hash = Url.to_hash link
+    @redis.set link_path(hash), link
     hash
   end
 
   # @param [String] hash
   def get_url(hash)
-    read_blob link_path hash
+    @redis.get link_path hash
   end
 
   def get_links
-    result = []
-    links = read_tree LINKS_PATH
-    unless links.nil?
-      links.each do |entry|
-        url = @repository.read(entry[:oid]).data
-        hash = entry[:name]
-        result << {:url => url, :hash => hash}
-      end
+    keys = @redis.keys link_path '*'
+    keys.inject([]) do |links, key|
+      links << {:url => @redis.get(key), :hash => unlink_path(key)}
     end
-    result
   end
 
   def store_settings(user, pass)
-    write "store settings" do |index|
-      index.add blob(user, USER_PATH)
-      index.add blob(Password.create(pass), PASS_PATH)
+    @redis.multi do
+      @redis.set USER_PATH, user
+      @redis.set PASS_PATH, Password.create(pass)
     end
   end
 
   def configured?
-    !read_blob(USER_PATH).nil?
+    !@redis.get(USER_PATH).nil?
   end
 
   def authenticate(user, pass)
     return false unless configured?
-    u = read_blob USER_PATH
-    p = Password.new read_blob PASS_PATH
+    u = @redis.get USER_PATH
+    p = Password.new @redis.get PASS_PATH
     u == user && p == pass
   end
 
@@ -62,10 +58,7 @@ private
     "#{LINKS_PATH}/#{path}"
   end
 
-  # @param [String] oid
-  # @param [String] path
-  # @return [Hash]
-  def blob_with_oid(oid, path)
-    {:path => path, :oid => oid, :mode => 0100644}
+  def unlink_path(path)
+    path.gsub "#{LINKS_PATH}/", ''
   end
 end
