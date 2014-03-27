@@ -57,13 +57,10 @@ class GitKVStore < KVStore
   # @return [Array]
   def multi_get_under(key_prefix)
     result = []
-    entries = @git.read_tree key_prefix
-    unless entries.nil?
-      entries.each do |entry|
-        value = @git.read(entry[:oid]).data
-        key = entry[:name]
-        result << {:key => key, :value => value}
-      end
+    @git.read_tree(key_prefix).each_blob do |blob|
+      key = blob[:name]
+      value = @git.read(blob[:oid]).data
+      result << {:key => key, :value => value}
     end
     result
   end
