@@ -47,7 +47,10 @@ class RedisKVStore < KVStore
   # @param [String] key_prefix
   # @return [Array]
   def multi_get_under(key_prefix)
-    keys = @redis.keys "#{key_prefix}/*"
+    all_keys = @redis.keys "#{key_prefix}/*"
+    keys = all_keys.reject do |key|
+      key.gsub("#{key_prefix}/", '').include? '/'
+    end
     keys.inject([]) do |values, key|
       values << {:key => key, :value => @redis.get(key)}
     end
