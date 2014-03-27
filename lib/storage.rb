@@ -31,7 +31,7 @@ class Storage
 
   # @param [String] hash
   def hits(hash)
-    @store.get hit_path hash
+    @store.get(hit_path(hash)).to_i
   end
 
   # @return [Array]
