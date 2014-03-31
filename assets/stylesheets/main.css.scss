@@ -64,3 +64,13 @@ body {
     border-bottom: 0;
   }
 }
+
+.row {
+  margin-bottom: 20px;
+}
+.bookmark:before {
+  content: 'Drag me: "';
+}
+.bookmark:after {
+  content: '"';
+}
