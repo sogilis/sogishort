@@ -53,6 +53,7 @@ class App < Sinatra::Base
   end
 
   get '/list' do
+    protected!
     links = @storage.links
     links_with_hits = links.map do |link|
       link[:hits] = @storage.hits link[:hash]
@@ -72,6 +73,7 @@ class App < Sinatra::Base
   end
 
   get '/v/:hash' do |hash|
+    protected!
     url = @storage.url hash
     hits = @storage.hits hash
     haml :link, :locals => {:base => path(request), :url => url, :hash => hash, :hits => hits}
