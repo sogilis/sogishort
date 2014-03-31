@@ -2,6 +2,8 @@ require "bundler"
 Bundler.require
 include Sprockets::Helpers
 
+require 'uri'
+
 require_relative 'lib/storage'
 require_relative 'lib/kvstore'
 require_relative 'lib/gitkvstore'
@@ -47,7 +49,7 @@ class App < Sinatra::Base
   get '/' do
     redirect to('/settings') unless @storage.configured?
     protected!
-    haml :index
+    haml :index, :locals => {:bookmark => bookmark(path(request))}
   end
 
   get '/list' do
@@ -83,6 +85,14 @@ class App < Sinatra::Base
     halt 200, {'Content-Type' => 'text/plain'}, short
   end
 
+  get '/short' do
+    protected!
+    url = params[:url]
+    hash = @storage.add_link url
+    short = "alert(\"#{path(request)}/#{hash}\");"
+    halt 200, {'Content-Type' => 'text/javascript'}, short
+  end
+
   get '/favicon.ico' do
 
   end
@@ -92,9 +102,24 @@ class App < Sinatra::Base
     redirect @storage.url(hash), 303
   end
 
+private
+
   def path(request)
     path = "#{request.scheme}://#{request.host}"
     path += ":#{request.port}" if request.port != 80
     path
+  end
+
+  def bookmark(base_path)
+    js_definition = <<EOF
+function () {
+document.body.appendChild((function() {
+var s = document.createElement('script');
+s.src = '#{base_path}/short?url=' + encodeURIComponent(location.href);
+return s;
+})());
+}
+EOF
+    URI::encode(js_definition.gsub(/\n/, ''))
   end
 end

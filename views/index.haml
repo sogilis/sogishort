@@ -5,3 +5,6 @@
         %label{:for => 'url'} URL:
         %input.form-control{:type => 'url', :name => 'url', :placeholder => 'Link to shorten', :required => 'required'}
       %button.btn.btn-default{:type => 'submit'} Do!
+.row
+  .col-sm-offset-2.col-sm-8
+    %a{:href => "javascript:(#{bookmark})()"} Short this!
