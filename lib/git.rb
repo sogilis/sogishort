@@ -1,6 +1,6 @@
 REPO_PATH='links.git'
-AUTHOR_MAIL='yves@sogilis.com'
-AUTHOR_NAME='Yves'
+AUTHOR_MAIL='plop@local'
+AUTHOR_NAME='Plop'
 
 class Git
 
