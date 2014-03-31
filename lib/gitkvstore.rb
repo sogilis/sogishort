@@ -9,6 +9,7 @@ class GitKVStore < KVStore
     @git = Git.new
     @index = nil
   end
+
   # @param [String] key
   # @return [Bool]
   def exists?(key)

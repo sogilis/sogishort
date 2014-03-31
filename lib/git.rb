@@ -19,11 +19,6 @@ class Git
     commit_head index.write_tree(@repository), message
   end
 
-  # @param [Hash] entry
-  def tree entry
-    @repository.lookup entry[:oid]
-  end
-
   def read(oid)
     @repository.read oid
   end
@@ -37,14 +32,6 @@ class Git
     obj = index[path]
     return nil if obj.nil?
     oid = obj[:oid]
-    @repository.read(oid).data
-  end
-
-  # @param [Rugged::Tree] tree
-  # @param [String] path
-  def read_blob_relative(tree, path)
-    return nil if @repository.empty?
-    oid = recurs_get_oid tree, path.split('/')
     @repository.read(oid).data
   end
 
@@ -62,15 +49,6 @@ class Git
     oid = recurs_get_oid tree, path.split('/')
     return nil unless oid
     @repository.lookup oid
-  end
-
-  # @param [Hash] tree
-  # @return [Rugged::Tree]
-  def read_children(tree_entry)
-    tree(tree_entry).each do |entry|
-      obj = @repository.lookup entry[:oid]
-      yield entry[:name], obj
-    end
   end
 
   def get_tree(rev = nil)
