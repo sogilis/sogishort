@@ -24,4 +24,7 @@ group :test, :development do
   gem 'guard-livereload', require: false
   # gem "rb-fsevent"
   # gem "growl_notify"
+
+  gem "cucumber"
+  gem "rspec"
 end
