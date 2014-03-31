@@ -63,6 +63,18 @@ class Storage
     u == user && p == pass
   end
 
+  def dump
+    entries = @store.multi_get_under LINKS_PATH
+    entries.inject([]) do |links, link|
+      hash = unlink_path(link[:key])
+      links << {
+          :hash => hash,
+          :url => link[:value],
+          :hits => hits(hash)
+      }
+    end
+  end
+
 private
 
   def link_path(path)

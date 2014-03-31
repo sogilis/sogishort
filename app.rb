@@ -99,6 +99,14 @@ class App < Sinatra::Base
 
   end
 
+  get '/dump' do
+    protected!
+    export = @storage.dump.inject(["hash;url;hits"]) do |export, datas|
+      export << "#{datas[:hash]};\"#{datas[:url]}\";#{datas[:hits]}"
+    end
+    halt 200, {'Content-Type' => 'text/csv'}, export.join("\n")
+  end
+
   get '/:hash' do |hash|
     @storage.incr_hits hash
     redirect @storage.url(hash), 303
