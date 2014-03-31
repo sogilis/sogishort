@@ -83,6 +83,10 @@ class App < Sinatra::Base
     halt 200, {'Content-Type' => 'text/plain'}, short
   end
 
+  get '/favicon.ico' do
+
+  end
+
   get '/:hash' do |hash|
     @storage.incr_hits hash
     redirect @storage.url(hash), 303
