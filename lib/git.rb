@@ -1,3 +1,5 @@
+require 'rugged'
+
 REPO_PATH='links.git'
 AUTHOR_MAIL='plop@local'
 AUTHOR_NAME='Plop'
@@ -5,10 +7,11 @@ AUTHOR_NAME='Plop'
 class Git
 
   def initialize()
-    if File.exist? REPO_PATH
-      @repository = Rugged::Repository.new REPO_PATH
+    path = ENV['REPO_PATH'] || REPO_PATH
+    if File.exist? path
+      @repository = Rugged::Repository.new path
     else
-      @repository = Rugged::Repository.init_at REPO_PATH, :bare
+      @repository = Rugged::Repository.init_at path, :bare
     end
   end
 
