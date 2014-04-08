@@ -109,7 +109,7 @@ class App < Sinatra::Base
 
   get '/:hash' do |hash|
     @storage.incr_hits hash
-    redirect @storage.url(hash), 303
+    redirect @storage.url(hash), 302
   end
 
 private
