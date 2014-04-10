@@ -59,7 +59,7 @@ class App < Sinatra::Base
       link[:hits] = @storage.hits link[:hash]
       link
     end
-    haml :list, :locals => {:base => path(request), :links => links_with_hits}
+    haml :list, :locals => {:base => http_path(request), :links => links_with_hits}
   end
 
   get '/settings' do
@@ -76,14 +76,14 @@ class App < Sinatra::Base
     protected!
     url = @storage.url hash
     hits = @storage.hits hash
-    haml :link, :locals => {:base => path(request), :url => url, :hash => hash, :hits => hits}
+    haml :link, :locals => {:base => http_path(request), :url => url, :hash => hash, :hits => hits}
   end
 
   get '/add' do
     protected!
     url = params[:url]
     hash = @storage.add_link url
-    short = "#{path(request)}/#{hash}"
+    short = "#{http_path(request)}/#{hash}"
     halt 200, {'Content-Type' => 'text/plain'}, short
   end
 
@@ -91,7 +91,7 @@ class App < Sinatra::Base
     protected!
     url = params[:url]
     hash = @storage.add_link url
-    short = "alert(\"#{path(request)}/#{hash}\");"
+    short = "alert(\"#{http_path(request)}/#{hash}\");"
     halt 200, {'Content-Type' => 'text/javascript'}, short
   end
 
@@ -114,10 +114,14 @@ class App < Sinatra::Base
 
 private
 
-  def path(request)
-    path = "#{request.scheme}://#{request.host}"
-    path += ":#{request.port}" if request.port != 80
+  def path(request, scheme = '')
+    path = "#{scheme}//#{request.host}"
+    path += ":#{request.port}" if request.port != 80 && request.port != 443
     path
+  end
+
+  def http_path(request)
+    path(request, 'http:')
   end
 
   def bookmark(base_path)
