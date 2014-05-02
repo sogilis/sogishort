@@ -1,4 +1,9 @@
-%table.table.table-striped
+%form
+  .input-group
+    %span.input-group-addon Filtrer
+    %input#filter.form-control{:type => "text", :placeholder => "url à filtrer"}
+
+%table#linklist.table.table-striped
   %thead
     %tr
       %th Short link
