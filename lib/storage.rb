@@ -37,11 +37,15 @@ class Storage
     @store.get(hit_path(hash)).to_i
   end
 
+  # @param [String] query
   # @return [Array]
-  def links
+  def links(query = nil)
     entries = @store.multi_get_under LINKS_PATH
     entries.inject([]) do |links, link|
-      links << {:url => link[:value], :hash => unlink_path(link[:key])}
+      if query.nil? || (!query.nil? && link[:value].include?(query)) then
+        links << {:url => link[:value], :hash => unlink_path(link[:key])}
+      end
+      links
     end
   end
 

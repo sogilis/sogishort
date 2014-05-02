@@ -54,7 +54,7 @@ class App < Sinatra::Base
 
   get '/list' do
     protected!
-    links = @storage.links
+    links = @storage.links params[:q]
     links_with_hits = links.map do |link|
       link[:hits] = @storage.hits link[:hash]
       link
