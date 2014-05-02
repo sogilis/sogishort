@@ -59,7 +59,14 @@ class App < Sinatra::Base
       link[:hits] = @storage.hits link[:hash]
       link
     end
-    haml :list, :locals => {:base => http_path(request), :links => links_with_hits}
+    sort = if !params[:s].nil? then
+             params[:s].to_sym
+           else
+             :url
+           end
+    sorted_links = links_with_hits.sort_by { |link| link[sort]}
+    sorted_links.reverse! if sort == :hits
+    haml :list, :locals => {:base => http_path(request), :links => sorted_links}
   end
 
   get '/settings' do

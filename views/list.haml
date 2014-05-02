@@ -7,8 +7,10 @@
   %thead
     %tr
       %th Short link
-      %th Full link
-      %th Hits
+      %th
+        %a#url_sort{:href => '#'} Full link
+      %th
+        %a#hits_sort{:href => '#'} Hits
       %th Details
   %tbody
     - links.each do |link|
